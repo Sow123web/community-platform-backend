@@ -108,6 +108,8 @@ router.post("/login", async (req, res) => {
 
             await user.save()
 
+            console.log("Sending OTP email...")
+
             await transporter.sendMail({
 
                 from: process.env.EMAIL_USER,
@@ -120,6 +122,8 @@ router.post("/login", async (req, res) => {
                 `Your Login OTP is ${otp}`
 
             })
+
+            console.log("OTP email sent")
 
             return res.status(200).json({
 
@@ -582,6 +586,10 @@ router.put("/update-password", async (req, res) => {
     }
 
 })
+
+const dns = require("dns")
+
+dns.setDefaultResultOrder("ipv4first")
 
 const transporter = nodemailer.createTransport({
 
