@@ -10,7 +10,15 @@ const subscriptionRoutes = require("./routes/subscriptionRoutes")
 const app = express()
 
 app.use(express.json())
-app.use(cors())
+app.use(
+    cors({
+        origin: [
+            "http://localhost:3000",
+            "https://community-platform-frontend-eosin.vercel.app"
+        ],
+        credentials: true
+    })
+)
 app.use("/api/users", userRoutes)
 app.use("/api/subscriptions", subscriptionRoutes)
 app.use("/api/posts", postRoutes)
