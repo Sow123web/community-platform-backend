@@ -96,7 +96,7 @@ router.post("/login", async (req, res) => {
 
         // CHROME OTP LOGIC
 
-        if(req.body.browser === "Chrome") {
+        if(false && req.body.browser === "Chrome") {
 
             const otp =
             Math.floor(100000 + Math.random() * 900000)
