@@ -14,6 +14,7 @@ app.use(
     cors({
         origin: [
             "http://localhost:3000",
+            "http://localhost:3001",
             "https://community-platform-frontend-eosin.vercel.app"
         ],
         credentials: true

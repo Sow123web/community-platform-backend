@@ -108,22 +108,31 @@ router.post("/login", async (req, res) => {
 
             await user.save()
 
-            console.log("Sending OTP email...")
+            try {
 
-            await transporter.sendMail({
+    console.log("Sending OTP...")
 
-                from: process.env.EMAIL_USER,
+    await transporter.sendMail({
 
-                to: user.email,
+        from: process.env.EMAIL_USER,
+        to: user.email,
+        subject: "Login Verification OTP",
+        text: `Your Login OTP is ${otp}`
 
-                subject: "Login Verification OTP",
+    })
 
-                text:
-                `Your Login OTP is ${otp}`
+    console.log("OTP Sent")
 
-            })
+}
+catch(error) {
 
-            console.log("OTP email sent")
+    console.log("MAIL ERROR:", error)
+
+    return res.status(500).json({
+        message: error.message
+    })
+
+}
 
             return res.status(200).json({
 
@@ -191,6 +200,8 @@ router.post("/login", async (req, res) => {
     }
 
     catch(error) {
+
+        console.log("LOGIN ERROR:", error)
 
         res.status(500).json({
 
