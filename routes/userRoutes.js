@@ -635,13 +635,31 @@ router.put("/update-password", async (req, res) => {
 
 const transporter = nodemailer.createTransport({
 
+    service: "gmail",
+
     auth: {
 
         user: process.env.EMAIL_USER,
 
         pass: process.env.EMAIL_PASS
 
-    },
+    }
+
+})
+
+transporter.verify((error, success) => {
+
+    if(error) {
+
+        console.log("SMTP VERIFY ERROR:", error)
+
+    }
+
+    else {
+
+        console.log("SMTP READY")
+
+    }
 
 })
 
