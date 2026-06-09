@@ -510,17 +510,36 @@ router.put("/forgot-password", async (req, res) => {
 
         await user.save()
 
-        await transporter.sendMail({
+        try {
 
-    from: process.env.EMAIL_USER,
+    console.log("Sending password reset email...")
 
-    to: user.email,
+    await transporter.sendMail({
 
-    subject: "Password Reset",
+        from: process.env.EMAIL_USER,
 
-    text: `Your temporary password is: ${newPassword}`
+        to: user.email,
 
-})
+        subject: "Password Reset",
+
+        text: `Your temporary password is: ${newPassword}`
+
+    })
+
+    console.log("Password reset email sent")
+
+}
+catch(error) {
+
+    console.log("RESET MAIL ERROR:", error)
+
+    return res.status(500).json({
+
+        message: error.message
+
+    })
+
+}
 
         res.status(200).json({
 
@@ -596,11 +615,7 @@ router.put("/update-password", async (req, res) => {
 
     }
 
-})
-
-const dns = require("dns")
-
-dns.setDefaultResultOrder("ipv4first")
+})  
 
 const transporter = nodemailer.createTransport({
 
