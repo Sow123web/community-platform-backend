@@ -504,12 +504,6 @@ router.put("/forgot-password", async (req, res) => {
 
         // UPDATE PASSWORD
 
-        user.password = newPassword
-
-        user.lastPasswordReset = new Date()
-
-        await user.save()
-
         try {
 
     console.log("Sending password reset email...")
@@ -573,6 +567,12 @@ transporter.verify(function(error, success) {
         })
 
     }
+
+    user.password = newPassword
+
+    user.lastPasswordReset = new Date()
+
+    await user.save()
 
 })
 
