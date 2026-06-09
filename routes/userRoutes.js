@@ -541,6 +541,22 @@ catch(error) {
 
 }
 
+transporter.verify(function(error, success) {
+
+    if(error) {
+
+        console.log("SMTP VERIFY ERROR:", error)
+
+    }
+
+    else {
+
+        console.log("SMTP READY")
+
+    }
+
+})
+
         res.status(200).json({
 
     message:
@@ -619,12 +635,6 @@ router.put("/update-password", async (req, res) => {
 
 const transporter = nodemailer.createTransport({
 
-    host: "smtp.gmail.com",
-
-    port: 587,
-
-    secure: false,
-
     auth: {
 
         user: process.env.EMAIL_USER,
@@ -632,12 +642,6 @@ const transporter = nodemailer.createTransport({
         pass: process.env.EMAIL_PASS
 
     },
-
-    tls: {
-
-        rejectUnauthorized: false
-
-    }
 
 })
 
