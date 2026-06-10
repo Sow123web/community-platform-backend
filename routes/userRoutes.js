@@ -775,13 +775,17 @@ router.put("/verify-french-otp",authMiddleware, async (req, res) => {
 
         // CHECK OTP
 
-        if(user.otp !== req.body.otp) {
+        console.log("Stored OTP:", user.otp)
 
-            return res.status(400).json({
-                message: "Invalid OTP"
-            })
+console.log("Received OTP:", req.body.otp)
 
-        }
+if(user.otp !== req.body.otp.toString().trim()) {
+
+    return res.status(400).json({
+        message: "Invalid OTP"
+    })
+
+}
 
         // CHECK OTP EXPIRY
 
@@ -819,11 +823,11 @@ router.put("/verify-french-otp",authMiddleware, async (req, res) => {
 
     catch(error) {
 
-        res.status(500).json({
-            message: error.message
-        })
+    console.log(error)
 
-    }
+    alert(error.response.data.message)
+
+}
 
 })
 
