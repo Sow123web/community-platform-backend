@@ -1,9 +1,9 @@
 const express = require("express")
 const router = express.Router()
-const nodemailer = require("nodemailer")
 const jwt = require("jsonwebtoken")
 const User = require("../models/User")
 const authMiddleware = require("../middleware/authMiddleware")
+const brevo = require("../config/brevo")
 
 router.post("/register", async (req, res) => {
 
@@ -112,14 +112,29 @@ router.post("/login", async (req, res) => {
 
     console.log("Sending OTP...")
 
-    await transporter.sendMail({
+    await brevo.sendTransacEmail({
 
-        from: process.env.EMAIL_USER,
-        to: user.email,
-        subject: "Login Verification OTP",
-        text: `Your Login OTP is ${otp}`
+    sender: {
 
-    })
+        email: "drjsp2007@gmail.com"
+
+    },
+
+    to: [
+
+        {
+
+            email: user.email
+
+        }
+
+    ],
+
+    subject: "Login Verification OTP",
+
+    textContent: `Your Login OTP is ${otp}`
+
+})
 
     console.log("OTP Sent")
 
@@ -506,19 +521,37 @@ router.put("/forgot-password", async (req, res) => {
 
         try {
 
+            user.password = newPassword
+
+        user.lastPasswordReset = new Date()
+
+        await user.save()
+
     console.log("Sending password reset email...")
 
-    await transporter.sendMail({
+    await brevo.sendTransacEmail({
 
-        from: process.env.EMAIL_USER,
+    sender: {
 
-        to: user.email,
+        email: "drjsp2007@gmail.com"
 
-        subject: "Password Reset",
+    },
 
-        text: `Your temporary password is: ${newPassword}`
+    to: [
 
-    })
+        {
+
+            email: user.email
+
+        }
+
+    ],
+
+    subject: "Password Reset",
+
+    textContent: `Your temporary password is: ${newPassword}`
+
+})
 
     console.log("Password reset email sent")
 
@@ -534,22 +567,6 @@ catch(error) {
     })
 
 }
-
-transporter.verify(function(error, success) {
-
-    if(error) {
-
-        console.log("SMTP VERIFY ERROR:", error)
-
-    }
-
-    else {
-
-        console.log("SMTP READY")
-
-    }
-
-})
 
         res.status(200).json({
 
@@ -568,11 +585,7 @@ transporter.verify(function(error, success) {
 
     }
 
-    user.password = newPassword
-
-    user.lastPasswordReset = new Date()
-
-    await user.save()
+    
 
 })
 
@@ -628,40 +641,6 @@ router.put("/update-password", async (req, res) => {
             error.message
 
         })
-
-    }
-
-})  
-
-const transporter = nodemailer.createTransport({
-
-    host: "smtp-relay.brevo.com",
-
-    port: 2525,
-
-    secure: false,
-
-    auth: {
-
-        user: process.env.BREVO_USER,
-
-        pass: process.env.BREVO_PASS
-
-    }
-
-})
-
-transporter.verify((error, success) => {
-
-    if(error) {
-
-        console.log("BREVO ERROR:", error)
-
-    }
-
-    else {
-
-        console.log("BREVO SMTP READY")
 
     }
 
@@ -731,28 +710,24 @@ router.put("/change-language", authMiddleware, async (req, res) => {
 
             // SEND EMAIL
 
-            await transporter.sendMail({
+            await brevo.sendTransacEmail({
 
-                from: process.env.EMAIL_USER,
+    sender: {
+        email: "drjsp2007@gmail.com"
+    },
 
-                to: user.email,
-
-                subject:
-                "French Language Verification OTP",
-
-                text:
-                `Your OTP for enabling French language is ${otp}`
-
-            })
-
-            return res.status(200).json({
-
-                message:
-                "OTP sent to email for French verification"
-
-            })
-
+    to: [
+        {
+            email: user.email
         }
+    ],
+
+    subject: "French Language Verification OTP",
+
+    textContent:
+    `Your OTP for enabling French language is ${otp}`
+
+})
 
         // APPLY OTHER LANGUAGES DIRECTLY
 
@@ -771,6 +746,8 @@ router.put("/change-language", authMiddleware, async (req, res) => {
         })
 
     }
+
+}
 
     catch(error) {
 
