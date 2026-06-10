@@ -496,7 +496,9 @@ router.put("/forgot-password", async (req, res) => {
            user.lastPasswordReset >= today) {
 
             return res.status(403).json({
-                message: "You can use this option only once per day"
+                message: "You can use this option only once per day",
+
+                alert: "You can use this option only once per day"
             })
 
         }
