@@ -650,6 +650,7 @@ router.put("/change-language", authMiddleware, async (req, res) => {
 
     try {
 
+        console.log("Language Change Request:", req.body)
         const user = await User.findById(req.userId)
 
         if(!user) {
@@ -660,92 +661,91 @@ router.put("/change-language", authMiddleware, async (req, res) => {
 
         }
 
-        // SUPPORTED LANGUAGES
+       // SUPPORTED LANGUAGES
 
-        const supportedLanguages = [
+const supportedLanguages = [
 
-            "English",
+    "English",
+    "Spanish",
+    "Hindi",
+    "Portuguese",
+    "Chinese",
+    "French"
 
-            "Spanish",
+]
 
-            "Hindi",
+// CHECK VALID LANGUAGE
 
-            "Portuguese",
+if(!supportedLanguages.includes(req.body.language)) {
 
-            "Chinese",
+    return res.status(400).json({
 
-            "French"
+        message: "Unsupported Language"
 
-        ]
+    })
 
-        // CHECK VALID LANGUAGE
+}
 
-        if(!supportedLanguages.includes(req.body.language)) {
+// FRENCH OTP LOGIC
 
-            return res.status(400).json({
+if(req.body.language === "French") {
 
-                message:
-                "Unsupported Language"
+    const otp =
+    Math.floor(100000 + Math.random() * 900000)
 
-            })
+    user.otp = otp.toString()
 
-        }
+    user.otpExpires =
+    new Date(Date.now() + 5 * 60 * 1000)
 
-        // FRENCH OTP LOGIC
+    await user.save()
 
-        if(req.body.language === "French") {
+    await brevo.sendTransacEmail({
 
-            // GENERATE OTP
+        sender: {
+            email: "drjsp2007@gmail.com"
+        },
 
-            const otp =
-            Math.floor(100000 + Math.random() * 900000)
+        to: [
+            {
+                email: user.email
+            }
+        ],
 
-            user.otp = otp.toString()
+        subject:
+        "French Language Verification OTP",
 
-            user.otpExpires =
-            new Date(Date.now() + 5 * 60 * 1000)
-            
+        textContent:
+        `Your OTP for enabling French language is ${otp}`
 
-            await user.save()
+    })
 
-            // SEND EMAIL
+    return res.status(200).json({
 
-            await brevo.sendTransacEmail({
+        message:
+        "OTP sent for French language verification"
 
-    sender: {
-        email: "drjsp2007@gmail.com"
-    },
+    })
 
-    to: [
-        {
-            email: user.email
-        }
-    ],
+}
 
-    subject: "French Language Verification OTP",
+// OTHER LANGUAGES
 
-    textContent:
-    `Your OTP for enabling French language is ${otp}`
+user.language = req.body.language
+
+console.log("Updating language to:", req.body.language)
+
+await user.save()
+
+return res.status(200).json({
+
+    message:
+    "Language Updated Successfully",
+
+    language:
+    user.language
 
 })
-
-        // APPLY OTHER LANGUAGES DIRECTLY
-
-        user.language = req.body.language
-
-        await user.save()
-
-        res.status(200).json({
-
-            message:
-            "Language Updated Successfully",
-
-            language:
-            user.language
-
-        })
-
-    }
 
 }
 
