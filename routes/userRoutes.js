@@ -499,8 +499,6 @@ router.put("/forgot-password", async (req, res) => {
                 message: "You can use this option only once per day"
             })
 
-            alert("You can use this option only once per day")
-
         }
 
         // GENERATE RANDOM PASSWORD
