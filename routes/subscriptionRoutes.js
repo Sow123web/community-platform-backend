@@ -20,15 +20,17 @@ router.put("/buy-plan", async (req, res) => {
 
         console.log("BUY PLAN ROUTE HIT")
 
-        console.log("REQUEST BODY:", req.body)
+        const user = await User.findById(req.body.userId)
 
-        const user =
-        await User.findById(req.body.userId)
+        if(!user) {
 
-        console.log(
-            "USER FOUND:",
-            user?.email
-        )
+            return res.status(404).json({
+                message: "User Not Found"
+            })
+
+        }
+
+        // IST TIME CHECK
 
         const now = new Date()
 
@@ -37,19 +39,28 @@ router.put("/buy-plan", async (req, res) => {
             timeZone: "Asia/Kolkata"
         }))
 
-        const hour =
-        indianTime.getHours()
+        const hour = indianTime.getHours()
 
-        console.log("CURRENT HOUR:", hour)
+        // ALLOW ONLY 10AM TO 11AM
+
+        if(hour < 10 || hour >= 11) {
+
+            return res.status(403).json({
+                message:
+                "Payments allowed only between 10 AM and 11 AM IST"
+            })
+
+        }
+
+        // UPDATE PLAN
 
         user.plan = req.body.plan
 
-        await user.save()
+        user.applicationsUsed = 0
 
-        console.log(
-            "PLAN UPDATED TO:",
-            user.plan
-        )
+        user.planPurchasedAt = new Date()
+
+        await user.save()
 
         await transporter.sendMail({
 
@@ -57,22 +68,24 @@ router.put("/buy-plan", async (req, res) => {
 
             to: user.email,
 
-            subject:
-            "Subscription Plan Invoice",
+            subject: "Subscription Plan Invoice",
 
             text:
-            `Plan ${user.plan} activated`
+            `Hello ${user.name},
+
+        Your ${user.plan} plan purchase was successful.
+
+        Thank you for subscribing.
+
+        - Internship Platform`
 
         })
 
-        console.log(
-            "EMAIL SENT SUCCESSFULLY"
-        )
-
         res.status(200).json({
 
-            message:
-            "Plan Purchased Successfully"
+            message: "Plan Purchased Successfully",
+
+            currentPlan: user.plan
 
         })
 
@@ -80,16 +93,8 @@ router.put("/buy-plan", async (req, res) => {
 
     catch(error) {
 
-        console.log(
-            "BUY PLAN ERROR:",
-            error
-        )
-
         res.status(500).json({
-
-            message:
-            error.message
-
+            message: error.message
         })
 
     }
