@@ -18,6 +18,8 @@ router.put("/buy-plan", async (req, res) => {
 
     try {
 
+        console.log("BUY PLAN ROUTE HIT")
+
         const user = await User.findById(req.body.userId)
 
         if(!user) {
