@@ -41,14 +41,14 @@ router.put("/buy-plan", async (req, res) => {
 
         // ALLOW ONLY 10AM TO 11AM
 
-        if(hour < 19 || hour >= 20) {
+        // if(hour < 19 || hour >= 20) {
 
-            return res.status(403).json({
-                message:
-                "Payments allowed only between 10 AM and 11 AM IST"
-            })
+        //     return res.status(403).json({
+        //         message:
+        //         "Payments allowed only between 10 AM and 11 AM IST"
+        //     })
 
-        }
+        // }
 
         // UPDATE PLAN
 
