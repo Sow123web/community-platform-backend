@@ -41,7 +41,7 @@ router.put("/buy-plan", async (req, res) => {
 
         // ALLOW ONLY 10AM TO 11AM
 
-        if(hour < 10 || hour >= 11) {
+        if(false && hour < 10 || hour >= 11) {
 
             return res.status(403).json({
                 message:
