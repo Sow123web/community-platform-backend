@@ -134,35 +134,6 @@ router.post("/create-order", async (req, res) => {
 
 })
 
-console.log("SENDING OTP VIA BREVO")
-
-await brevo.sendTransacEmail({
-
-    sender: {
-
-        email: process.env.BREVO_USER
-
-    },
-
-    to: [
-
-        {
-
-            email: user.email
-
-        }
-
-    ],
-
-    subject: "Resume Verification OTP",
-
-    textContent:
-    `Your OTP for resume payment verification is ${otp}`
-
-})
-
-console.log("BREVO OTP SENT SUCCESSFULLY")
-
 router.post("/apply-internship", async (req, res) => {
 
     try {
@@ -272,22 +243,34 @@ router.post("/send-otp", async (req, res) => {
 
         await user.save()
 
-        console.log("SENDING EMAIL")
+        console.log("SENDING OTP VIA BREVO")
 
-        await transporter.sendMail({
+await brevo.sendTransacEmail({
 
-            from: process.env.EMAIL_USER,
+    sender: {
 
-            to: user.email,
+        email: process.env.BREVO_USER
 
-            subject: "Resume Verification OTP",
+    },
 
-            text:
-            `Your OTP for resume payment verification is ${otp}`
+    to: [
 
-        })
+        {
 
-        console.log("EMAIL SENT")
+            email: user.email
+
+        }
+
+    ],
+
+    subject: "Resume Verification OTP",
+
+    textContent:
+    `Your OTP for resume payment verification is ${otp}`
+
+})
+
+console.log("BREVO OTP SENT SUCCESSFULLY")
 
         res.status(200).json({
 
