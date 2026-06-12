@@ -32,25 +32,25 @@ router.put("/buy-plan", async (req, res) => {
 
         // IST TIME CHECK
 
-        const now = new Date()
+        // const now = new Date()
 
-        const indianTime =
-        new Date(now.toLocaleString("en-US", {
-            timeZone: "Asia/Kolkata"
-        }))
+        // const indianTime =
+        // new Date(now.toLocaleString("en-US", {
+        //     timeZone: "Asia/Kolkata"
+        // }))
 
-        const hour = indianTime.getHours()
+        // const hour = indianTime.getHours()
 
-        // ALLOW ONLY 10AM TO 11AM
+        // // ALLOW ONLY 10AM TO 11AM
 
-        if(hour < 10 || hour >= 11) {
+        // if(hour < 10 || hour >= 11) {
 
-            return res.status(403).json({
-                message:
-                "Payments allowed only between 10 AM and 11 AM IST"
-            })
+        //     return res.status(403).json({
+        //         message:
+        //         "Payments allowed only between 10 AM and 11 AM IST"
+        //     })
 
-        }
+        // }
 
         // UPDATE PLAN
 
