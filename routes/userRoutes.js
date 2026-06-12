@@ -68,7 +68,7 @@ router.post("/login", async (req, res) => {
 
         // MOBILE TIME RESTRICTION
 
-        if(req.body.device === "Mobile") {
+        if(req.body.device === "mobile") {
 
             const now = new Date()
 
