@@ -62,24 +62,37 @@ router.put("/buy-plan", async (req, res) => {
 
         await user.save()
 
-        await transporter.sendMail({
+        await brevo.sendTransacEmail({
 
-            from: process.env.EMAIL_USER,
+    sender: {
 
-            to: user.email,
+        email: "drjsp2007@gmail.com"
 
-            subject: "Subscription Plan Invoice",
+    },
 
-            text:
-            `Hello ${user.name},
+    to: [
 
-        Your ${user.plan} plan purchase was successful.
+        {
 
-        Thank you for subscribing.
+            email: user.email
 
-        - Internship Platform`
+        }
 
-        })
+    ],
+
+    subject: "Subscription Plan Invoice",
+
+    textContent:
+
+`Hello ${user.name},
+
+Your ${user.plan} plan purchase was successful.
+
+Thank you for subscribing.
+
+- Internship Platform`
+
+})
 
         res.status(200).json({
 
