@@ -1,6 +1,7 @@
 const express = require("express")
 const Razorpay = require("razorpay")
 const nodemailer = require("nodemailer")
+const brevo = require("../config/brevo")
 
 const razorpay = new Razorpay({
 
@@ -133,19 +134,34 @@ router.post("/create-order", async (req, res) => {
 
 })
 
-const transporter = nodemailer.createTransport({
+console.log("SENDING OTP VIA BREVO")
 
-    service: "gmail",
+await brevo.sendTransacEmail({
 
-    auth: {
+    sender: {
 
-        user: process.env.EMAIL_USER,
+        email: process.env.BREVO_USER
 
-        pass: process.env.EMAIL_PASS
+    },
 
-    }
+    to: [
+
+        {
+
+            email: user.email
+
+        }
+
+    ],
+
+    subject: "Resume Verification OTP",
+
+    textContent:
+    `Your OTP for resume payment verification is ${otp}`
 
 })
+
+console.log("BREVO OTP SENT SUCCESSFULLY")
 
 router.post("/apply-internship", async (req, res) => {
 
