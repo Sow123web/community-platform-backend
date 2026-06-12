@@ -227,7 +227,12 @@ router.post("/send-otp", async (req, res) => {
 
     try {
 
+        console.log("=== RESUME OTP ROUTE HIT ===")
+        console.log("USER ID:", req.body.userId)
+
         const user = await User.findById(req.body.userId)
+
+        console.log("USER:", user?.email)
 
         if(!user) {
 
@@ -237,29 +242,12 @@ router.post("/send-otp", async (req, res) => {
 
         }
 
-        // PREMIUM CHECK
-
-        if(
-    user.plan !== "Bronze" &&
-    user.plan !== "Silver" &&
-    user.plan !== "Gold"
-) {
-
-    return res.status(403).json({
-
-        message:
-        "Resume feature available only for premium users"
-
-    })
-
-}
-
-        // GENERATE 6 DIGIT OTP
+        console.log("GENERATING OTP")
 
         const otp =
         Math.floor(100000 + Math.random() * 900000)
 
-        // SAVE OTP
+        console.log("OTP:", otp)
 
         user.otp = otp.toString()
 
@@ -268,7 +256,7 @@ router.post("/send-otp", async (req, res) => {
 
         await user.save()
 
-        // SEND EMAIL
+        console.log("SENDING EMAIL")
 
         await transporter.sendMail({
 
@@ -283,6 +271,8 @@ router.post("/send-otp", async (req, res) => {
 
         })
 
+        console.log("EMAIL SENT")
+
         res.status(200).json({
 
             message:
@@ -293,6 +283,11 @@ router.post("/send-otp", async (req, res) => {
     }
 
     catch(error) {
+
+        console.log(
+            "SEND OTP ERROR:",
+            error
+        )
 
         res.status(500).json({
             message: error.message
