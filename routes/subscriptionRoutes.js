@@ -1,6 +1,5 @@
 const express = require("express")
 const Razorpay = require("razorpay")
-const nodemailer = require("nodemailer")
 const brevo = require("../config/brevo")
 
 const razorpay = new Razorpay({
