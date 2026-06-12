@@ -211,6 +211,8 @@ router.post("/apply-internship", async (req, res) => {
 
 router.post("/send-otp", async (req, res) => {
 
+    console.log("BREVO VERSION DEPLOYED")
+
     try {
 
         console.log("=== RESUME OTP ROUTE HIT ===")
