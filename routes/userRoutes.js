@@ -389,13 +389,7 @@ router.get("/login-history",authMiddleware,async (req, res) => {
 
 )
 
-router.put(
-
-    "/add-friend",
-
-    authMiddleware,
-
-    async (req, res) => {
+router.put("/add-friend",authMiddleware,async (req, res) => {
 
         try {
 
